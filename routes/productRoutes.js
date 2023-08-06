@@ -25,7 +25,7 @@ router.post('/products', async (req, res) => {
     try {
         const { name, img, price, desc } = req.body;
         await Products.create({ name, img, price: parseFloat(price), desc });
-
+        req.flash('success', 'product added successfully')
         res.redirect('/products');
     }
     catch (e) {
@@ -50,6 +50,7 @@ router.delete('/products/:id', async (req, res) => {
     try {
         const { id } = req.params;
         await Products.findOneAndDelete(id);
+        req.flash('success', 'product deleted successfully')
         res.redirect('/products');
     }
     catch (e) {
@@ -74,6 +75,7 @@ router.patch('/products/:id', validateProduct, async (req, res) => {
         const { name, price, desc, img } = req.body;
 
         await Products.findByIdAndUpdate(id, { name, price, desc, img });
+        req.flash('success', 'product edited successfully')
         res.redirect(`/products/${id}`);
     }
     catch (e) {
