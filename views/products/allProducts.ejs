@@ -1,0 +1,25 @@
+<% layout('layouts/boilerplate') -%>
+
+    <div class="container text-center">
+        <div class="row">
+            <% for(let product of allProducts){ %>
+                <div class="col-lg-3 mt-3 mb-3">
+                    <div class="card" style="width: 18rem;">
+                        <img src=<%=product.img%> class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%=product.name%>
+                            </h5>
+                            <p class="card-text">
+                                <%=product.desc.substring(0,100)%>...
+                            </p>
+                            <h5 class="card-title">Price : $ <span style="color:rgb(237, 173, 24)">
+                                    <%=product.price%>
+                                </span></h5>
+                            <a href="/products/<%=product._id%>" class="btn btn-primary">view product</a>
+                        </div>
+                    </div>
+                </div>
+                <%} %>
+        </div>
+    </div>
