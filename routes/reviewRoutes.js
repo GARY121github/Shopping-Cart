@@ -2,8 +2,10 @@ const router = require('express').Router();
 const Product = require('../models/product');
 const Review = require('../models/review');
 const { validateReview } = require('../middlewares/dataValidation');
+const { isLoggedIn } = require('../middlewares/authVerification');
 
-router.post('/products/:id/review', validateReview, async (req, res) => {
+
+router.post('/products/:id/review', isLoggedIn, validateReview, async (req, res) => {
     try {
 
         const { id } = req.params;
@@ -22,7 +24,7 @@ router.post('/products/:id/review', validateReview, async (req, res) => {
     }
 });
 
-router.delete('/products/:productID/:reviewID', async (req, res) => {
+router.delete('/products/:productID/:reviewID', isLoggedIn, async (req, res) => {
     try {
         const { productID, reviewID } = req.params;
         await Review.findByIdAndRemove(reviewID);

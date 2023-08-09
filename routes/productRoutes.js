@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const Products = require('../models/product');
 const { validateProduct } = require('../middlewares/dataValidation');
+const { isLoggedIn } = require('../middlewares/authVerification');
+const { isAuthor } = require('../middlewares/userValidation')
 
 router.get('/products', async (req, res) => {
     try {
@@ -21,10 +23,11 @@ router.get('/products/new', async (req, res) => {
     }
 });
 
-router.post('/products', async (req, res) => {
+router.post('/products', isLoggedIn, async (req, res) => {
     try {
+        // console.log(req.user);
         const { name, img, price, desc } = req.body;
-        await Products.create({ name, img, price: parseFloat(price), desc });
+        await Products.create({ name, img, price: parseFloat(price), author: req.user._id, desc });
         req.flash('success', 'product added successfully')
         res.redirect('/products');
     }
@@ -46,10 +49,10 @@ router.get('/products/:id', async (req, res) => {
     }
 });
 
-router.delete('/products/:id', async (req, res) => {
+router.delete('/products/:id', isLoggedIn, isAuthor, async (req, res) => {
     try {
         const { id } = req.params;
-        await Products.findOneAndDelete(id);
+        await Products.findByIdAndDelete(id);
         req.flash('success', 'product deleted successfully')
         res.redirect('/products');
     }
@@ -58,7 +61,7 @@ router.delete('/products/:id', async (req, res) => {
     }
 })
 
-router.get('/products/:id/edit', async (req, res) => {
+router.get('/products/:id/edit', isLoggedIn, async (req, res) => {
     try {
         const { id } = req.params;
         const product = await Products.findById(id);
@@ -69,7 +72,7 @@ router.get('/products/:id/edit', async (req, res) => {
     }
 })
 
-router.patch('/products/:id', validateProduct, async (req, res) => {
+router.patch('/products/:id', isLoggedIn, validateProduct, async (req, res) => {
     try {
         const { id } = req.params;
         const { name, price, desc, img } = req.body;

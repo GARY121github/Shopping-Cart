@@ -18,6 +18,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    author : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : 'User'
+    },
     reviews: [
         {
             type: mongoose.Schema.Types.ObjectId,
