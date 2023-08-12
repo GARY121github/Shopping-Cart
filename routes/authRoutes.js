@@ -1,61 +1,17 @@
 const router = require('express').Router();
-const User = require('../models/user');
 const passport = require('passport');
+const { registerPage, register, loginPage, login, logout } = require('../controller/authRoutesController')
+
+router.route('/register')
+    .get(registerPage)
+    .post(register);
 
 
-router.get('/register', async (req, res) => {
-    res.render('auth/signup');
-})
+router.route('/login')
+    .get(loginPage)
+    .post(passport.authenticate('local', { failureRedirect: '/login' }), login);
 
-router.post('/register', async (req, res) => {
-    try {
-        const { username, password, email, role } = req.body;
-        const user = new User({ username, email, role });
-        const newUser = await User.register(user, password);
-
-        req.login(newUser, function (err) {
-            if (err) {
-                return next(err);
-            }
-
-            req.flash('success', 'Welcome , You are Registered Successfully');
-            return res.redirect('/products');
-        });
-    }
-    catch (e) {
-        req.flash('error', e.message);
-        res.redirect('/register');
-    }
-});
-
-
-router.get('/login', (req, res) => {
-    try {
-        req.session.return = req.session.returnURL;
-        // console.log(req.session);
-        res.render('auth/login');
-    }
-    catch (err) {
-        res.render('error', { err: err.message });
-    }
-})
-
-router.post('/login',
-    passport.authenticate('local', { failureRedirect: '/login' }),
-    function (req, res) {
-        req.flash('success', `welcome back ${req.user.username}`);
-        // console.log(req);
-        res.redirect('/products');
-    });
-
-router.get('/logout', function (req, res, next) {
-    req.logout(function (err) {
-        if (err) { return next(err); }
-
-        req.flash('success', 'GoodBye!!!');
-        res.redirect('/products');
-    });
-});
-
+router.get('/logout', logout);
 
 module.exports = router;
+
