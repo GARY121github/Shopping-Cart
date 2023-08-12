@@ -25,8 +25,6 @@ app.use(methodOverride('_method'));
 
 
 
-
-
 // SETTING UP SESSION-STORAGE FEATURE
 const sessionConfig = {
     secret: 'sun rises from east',
@@ -60,10 +58,16 @@ app.use((req, res, next) => {
 const productRoutes = require('./routes/productRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const authRoutes = require('./routes/authRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 app.use(productRoutes);
 app.use(reviewRoutes);
 app.use(authRoutes);
+app.use(cartRoutes);
+
+app.get('/' , (req , res)=>{
+    res.render('home');
+})
 
 
 const port = 3000;

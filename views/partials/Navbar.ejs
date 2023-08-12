@@ -27,8 +27,8 @@
           <a href="/login" class="nav-link">Login</a>
           <%}else{%>
             <a href="#" class="nav-link"><span class="text-capitalize" style="color: #cdb4db;">hello <%= currentUser.username %></span></a>
-            <a href="#" class="nav-link"><i class="fas fa-shopping-cart"></i>
-              <sup><span class="badge bg-danger">2</span></sup>
+            <a href="/user/cart" class="nav-link"><i class="fas fa-shopping-cart"></i> 
+              <sup><span class="badge bg-danger"><%=currentUser.cart.length%></span></sup> 
             </a>
             <a href="/logout" class="nav-link">Logout</a>
             <%}%>
