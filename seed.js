@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Product = require('./models/product');
 
-mongoose.connect('mongodb://127.0.0.1:27017/ShoppingApp').
+mongoose.connect('mongodb+srv://harshprakash000:PJdgvSmdPo2777BR@shoppingcart.ucbsvhn.mongodb.net/?retryWrites=true&w=majority').
     then(console.log("DB connected!!!!!")).
     catch(err => console.log(err));
 

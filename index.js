@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV !== 'production'){
+    require('dotenv').config();
+}
+
 const express = require('express');
 const app = express();
 const path = require('path');
@@ -9,8 +13,12 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
+const MongoStore = require('connect-mongo');
 
-mongoose.connect('mongodb://127.0.0.1:27017/ShoppingApp').
+
+const dbURL = process.env.dbURL || 'mongodb://127.0.0.1:27017/ShoppingApp'
+
+mongoose.connect(dbURL).
     then(console.log("DB connected!!!!!")).
     catch(err => console.log(err));
 
@@ -24,10 +32,17 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'));
 
 
+const secret = process.env.SECRET || 'sun rises from east';
 
+const store = MongoStore.create({
+    secret : secret,
+    mongoUrl : dbURL,
+    touchAfter : 24*60*60 
+});
 // SETTING UP SESSION-STORAGE FEATURE
 const sessionConfig = {
-    secret: 'sun rises from east',
+    store,
+    secret: secret,
     resave: false,
     saveUninitialized: true
 }
@@ -54,6 +69,10 @@ app.use((req, res, next) => {
 })
 
 
+app.get('/' , (req , res)=>{
+    res.render('home');
+})
+
 // ROUTING
 const productRoutes = require('./routes/productRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
@@ -65,12 +84,12 @@ app.use(reviewRoutes);
 app.use(authRoutes);
 app.use(cartRoutes);
 
-app.get('/' , (req , res)=>{
-    res.render('home');
+app.all('*' , (req , res) =>{
+    res.render('error' , {err : "You are requesting wrong URL!!!"});
 })
 
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.listen(3000, () => {
     console.log(`Connected at port ${port}`);
 })
