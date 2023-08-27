@@ -37,7 +37,7 @@ module.exports.viewProduct = async (req, res) => {
         const { id } = req.params;
 
         const product = await Products.findById(id).populate('reviews');
-
+        // console.log(product);
         res.render('products/viewProduct', { product });
     }
     catch (e) {
